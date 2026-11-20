@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "UserProfileSettings": {
+      "title": "UserProfileSettings",
+      "description": "Synced VITALTRACK user preferences and wellness goals.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Authenticated owner UID." },
+        "displayName": { "type": "string", "description": "User display name (1 to 60 characters)." },
+        "dailyStepGoal": { "type": "integer", "description": "Daily step goal (1000 to 50000)." },
+        "dailyWaterGoalMl": { "type": "integer", "description": "Daily hydration goal in ml (500 to 6000)." },
+        "useImperialUnits": { "type": "boolean", "description": "Whether imperial units are preferred." },
+        "languageCode": { "type": "string", "enum": ["en", "bn"], "description": "Preferred UI language code." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server creation timestamp via FieldValue.serverTimestamp()." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server update timestamp via FieldValue.serverTimestamp()." }
+      },
+      "required": ["userId", "displayName", "dailyStepGoal", "dailyWaterGoalMl", "useImperialUnits", "languageCode", "createdAt", "updatedAt"]
+    },
+    "DailyStepSummary": {
+      "title": "DailyStepSummary",
+      "description": "Per-day step count, estimated distance, calories, and active minutes.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "dateIso": { "type": "string", "description": "ISO date YYYY-MM-DD." },
+        "steps": { "type": "integer" },
+        "goal": { "type": "integer" },
+        "distanceMeters": { "type": "number" },
+        "caloriesKcal": { "type": "number" },
+        "activeMinutes": { "type": "integer" },
+        "source": { "type": "string" },
+        "clientUpdatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "dateIso", "steps", "goal", "distanceMeters", "caloriesKcal", "activeMinutes", "source", "clientUpdatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "GpsActivitySummary": {
+      "title": "GpsActivitySummary",
+      "description": "Recorded GPS workout or walk/run/cycle summary.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "activityType": { "type": "string", "enum": ["WALKING", "RUNNING", "CYCLING"] },
+        "title": { "type": "string" },
+        "dateIso": { "type": "string" },
+        "startTimeMillis": { "type": "integer" },
+        "endTimeMillis": { "type": "integer" },
+        "activeDurationMillis": { "type": "integer" },
+        "distanceMeters": { "type": "number" },
+        "avgSpeedMps": { "type": "number" },
+        "caloriesKcal": { "type": "number" },
+        "steps": { "type": "integer" },
+        "notes": { "type": "string" },
+        "clientUpdatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "activityType", "title", "dateIso", "startTimeMillis", "endTimeMillis", "activeDurationMillis", "distanceMeters", "avgSpeedMps", "caloriesKcal", "steps", "notes", "clientUpdatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "HealthLogEntry": {
+      "title": "HealthLogEntry",
+      "description": "Hydration, weight, sleep, heart rate, or wellness journal entry.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "logType": { "type": "string", "enum": ["WATER", "WEIGHT", "SLEEP", "HEART_RATE", "JOURNAL"] },
+        "dateIso": { "type": "string" },
+        "numericValue": { "type": "number" },
+        "secondaryValue": { "type": "number" },
+        "label": { "type": "string" },
+        "notes": { "type": "string" },
+        "recordedAtMillis": { "type": "integer" },
+        "clientUpdatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "logType", "dateIso", "numericValue", "secondaryValue", "label", "notes", "recordedAtMillis", "clientUpdatedAtMillis", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/profile/{docId}": {
+      "schema": { "$ref": "#/entities/UserProfileSettings" },
+      "description": "User wellness goals and unit/language settings."
+    },
+    "/users/{userId}/daily_steps/{dateIso}": {
+      "schema": { "$ref": "#/entities/DailyStepSummary" },
+      "description": "Per-user daily step summaries."
+    },
+    "/users/{userId}/gps_sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/GpsActivitySummary" },
+      "description": "Per-user GPS activity summaries."
+    },
+    "/users/{userId}/health_logs/{logId}": {
+      "schema": { "$ref": "#/entities/HealthLogEntry" },
+      "description": "Per-user water, weight, sleep, heart rate, and journal logs."
+    }
+  }
+}

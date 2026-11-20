@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VITALTRACK</string>
+    <string name="app_tagline">Move Better. Live Healthier. Understand Your Journey.</string>
+    <string name="widget_description">Today\'s steps, hydration, and active habit streak at a glance.</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_activity">Activity</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_health">Health</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Notifications & Channels -->
+    <string name="channel_tracking_name">Live GPS Activity Tracking</string>
+    <string name="channel_tracking_desc">Persistent notification while recording an active GPS route</string>
+    <string name="channel_reminders_name">Wellness &amp; Habit Reminders</string>
+    <string name="channel_reminders_desc">Hydration, daily habit, and step goal reminders</string>
+    <string name="tracking_notif_title">VITALTRACK GPS Active</string>
+    <string name="tracking_action_pause">Pause</string>
+    <string name="tracking_action_resume">Resume</string>
+    <string name="tracking_action_stop">Stop</string>
+
+    <!-- Auth & Cloud Sync -->
+    <string name="sign_in_button">Sign in with Google</string>
+    <string name="sign_out_label">Sign out</string>
+    <string name="cloud_sync_title">Optional Cloud Backup &amp; Sync</string>
+    <string name="cloud_sync_subtitle">VITALTRACK works completely offline. Sign in with Google only if you want encrypted backup and multi-device sync.</string>
+
+    <!-- Disclaimers & Offline States -->
+    <string name="medical_disclaimer">Informational only — VITALTRACK is not a medical diagnostic device and does not replace professional medical advice.</string>
+    <string name="offline_banner">Offline mode active — local tracking and saved data remain fully functional.</string>
+    <string name="map_offline_notice">Offline — showing cached map tiles only. Uncached regions may appear blank until connected.</string>
+
+    <!-- Core Labels -->
+    <string name="steps_label">Steps</string>
+    <string name="distance_label">Distance</string>
+    <string name="calories_label">Est. Calories</string>
+    <string name="active_minutes_label">Active Min</string>
+    <string name="water_label">Hydration</string>
+    <string name="sleep_label">Sleep</string>
+    <string name="heart_rate_label">Heart Rate</string>
+    <string name="weight_label">Weight &amp; BMI</string>
+    <string name="habits_label">Daily Habits</string>
+    <string name="ai_coach_label">AI Wellness Coach</string>
+    <string name="start_gps_session">Start GPS Activity</string>
+    <string name="save_label">Save</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="back_label">Back</string>
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VITALTRACK</string>
+    <string name="app_tagline">ভালো চলুন। সুস্থ থাকুন। আপনার যাত্রাকে বুঝুন।</string>
+    <string name="widget_description">আজকের পদক্ষেপ, পানি পান এবং দৈনিক অভ্যাসের ধারা এক নজরে।</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">হোম</string>
+    <string name="nav_activity">কার্যকলাপ</string>
+    <string name="nav_map">মানচিত্র</string>
+    <string name="nav_health">স্বাস্থ্য</string>
+    <string name="nav_profile">প্রোফাইল</string>
+
+    <!-- Notifications & Channels -->
+    <string name="channel_tracking_name">লাইভ জিপিএস ট্র্যাকিং</string>
+    <string name="channel_tracking_desc">সক্রিয় জিপিএস রুট রেকর্ডিং চলাকালীন স্থায়ী বিজ্ঞপ্তি</string>
+    <string name="channel_reminders_name">সুস্থতা ও অভ্যাসের রিমাইন্ডার</string>
+    <string name="channel_reminders_desc">পানি পান, দৈনিক অভ্যাস এবং পদক্ষেপ লক্ষ্যের রিমাইন্ডার</string>
+    <string name="tracking_notif_title">VITALTRACK জিপিএস চালু আছে</string>
+    <string name="tracking_action_pause">বিরতি</string>
+    <string name="tracking_action_resume">পুনরায় শুরু</string>
+    <string name="tracking_action_stop">থামুন</string>
+
+    <!-- Auth & Cloud Sync -->
+    <string name="sign_in_button">Google দিয়ে সাইন ইন করুন</string>
+    <string name="sign_out_label">সাইন আউট</string>
+    <string name="cloud_sync_title">ঐচ্ছিক ক্লাউড ব্যাকআপ ও সিঙ্ক</string>
+    <string name="cloud_sync_subtitle">VITALTRACK সম্পূর্ণ অফলাইনে কাজ করে। ক্লাউড ব্যাকআপ ও মাল্টি-ডিভাইস সিঙ্কের জন্য কেবল Google দিয়ে সাইন ইন করুন।</string>
+
+    <!-- Disclaimers & Offline States -->
+    <string name="medical_disclaimer">কেবল তথ্যের জন্য — VITALTRACK কোনো চিকিৎসা নির্ণয়কারী যন্ত্র নয় এবং পেশাদার চিকিৎসকের পরামর্শের বিকল্প নয়।</string>
+    <string name="offline_banner">অফলাইন মোড চালু — স্থানীয় ট্র্যাকিং ও সংরক্ষিত তথ্য সম্পূর্ণ সচল আছে।</string>
+    <string name="map_offline_notice">অফলাইন — কেবল ক্যাশ করা মানচিত্র টাইলস দেখানো হচ্ছে। সংযোগ ছাড়া নতুন এলাকা ফাঁকা দেখাতে পারে।</string>
+
+    <!-- Core Labels -->
+    <string name="steps_label">পদক্ষেপ</string>
+    <string name="distance_label">দূরত্ব</string>
+    <string name="calories_label">আনুমানিক ক্যালোরি</string>
+    <string name="active_minutes_label">সক্রিয় মিনিট</string>
+    <string name="water_label">পানি পান</string>
+    <string name="sleep_label">ঘুম</string>
+    <string name="heart_rate_label">হৃদস্পন্দন</string>
+    <string name="weight_label">ওজন ও বিএমআই</string>
+    <string name="habits_label">দৈনিক অভ্যাস</string>
+    <string name="ai_coach_label">এআই সুস্থতা কোচ</string>
+    <string name="start_gps_session">জিপিএস কার্যকলাপ শুরু করুন</string>
+    <string name="save_label">সংরক্ষণ</string>
+    <string name="cancel_label">বাতিল</string>
+    <string name="back_label">ফিরুন</string>
+</resources>

@@ -1,0 +1,255 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidProfile(data) {
+      return data.userId is string &&
+             data.userId.size() >= 1 &&
+             data.userId.size() <= 128 &&
+             data.displayName is string &&
+             data.displayName.size() >= 1 &&
+             data.displayName.size() <= 60 &&
+             data.dailyStepGoal is int &&
+             data.dailyStepGoal >= 1000 &&
+             data.dailyStepGoal <= 50000 &&
+             data.dailyWaterGoalMl is int &&
+             data.dailyWaterGoalMl >= 500 &&
+             data.dailyWaterGoalMl <= 6000 &&
+             data.useImperialUnits is bool &&
+             data.languageCode is string &&
+             data.languageCode in ['en', 'bn'] &&
+             data.createdAt is timestamp &&
+             data.createdAt <= request.time &&
+             data.updatedAt is timestamp &&
+             data.updatedAt <= request.time;
+    }
+
+    function isValidDailyStep(data) {
+      return data.userId is string &&
+             data.userId.size() >= 1 &&
+             data.userId.size() <= 128 &&
+             data.dateIso is string &&
+             data.dateIso.size() == 10 &&
+             data.steps is int &&
+             data.steps >= 0 &&
+             data.goal is int &&
+             data.goal >= 1000 &&
+             data.distanceMeters is number &&
+             data.distanceMeters >= 0 &&
+             data.caloriesKcal is number &&
+             data.caloriesKcal >= 0 &&
+             data.activeMinutes is int &&
+             data.activeMinutes >= 0 &&
+             data.source is string &&
+             data.source.size() >= 1 &&
+             data.source.size() <= 40 &&
+             data.clientUpdatedAtMillis is int &&
+             data.clientUpdatedAtMillis >= 0 &&
+             data.createdAt is timestamp &&
+             data.createdAt <= request.time &&
+             data.updatedAt is timestamp &&
+             data.updatedAt <= request.time;
+    }
+
+    function isValidGpsSession(data) {
+      return data.userId is string &&
+             data.userId.size() >= 1 &&
+             data.userId.size() <= 128 &&
+             data.activityType is string &&
+             data.activityType in ['WALKING', 'RUNNING', 'CYCLING'] &&
+             data.title is string &&
+             data.title.size() >= 1 &&
+             data.title.size() <= 100 &&
+             data.dateIso is string &&
+             data.dateIso.size() == 10 &&
+             data.startTimeMillis is int &&
+             data.startTimeMillis >= 0 &&
+             data.endTimeMillis is int &&
+             data.endTimeMillis >= data.startTimeMillis &&
+             data.activeDurationMillis is int &&
+             data.activeDurationMillis >= 0 &&
+             data.distanceMeters is number &&
+             data.distanceMeters >= 0 &&
+             data.avgSpeedMps is number &&
+             data.avgSpeedMps >= 0 &&
+             data.caloriesKcal is number &&
+             data.caloriesKcal >= 0 &&
+             data.steps is int &&
+             data.steps >= 0 &&
+             data.notes is string &&
+             data.notes.size() <= 400 &&
+             data.clientUpdatedAtMillis is int &&
+             data.clientUpdatedAtMillis >= 0 &&
+             data.createdAt is timestamp &&
+             data.createdAt <= request.time &&
+             data.updatedAt is timestamp &&
+             data.updatedAt <= request.time;
+    }
+
+    function isValidHealthLog(data) {
+      return data.userId is string &&
+             data.userId.size() >= 1 &&
+             data.userId.size() <= 128 &&
+             data.logType is string &&
+             data.logType in ['WATER', 'WEIGHT', 'SLEEP', 'HEART_RATE', 'JOURNAL'] &&
+             data.dateIso is string &&
+             data.dateIso.size() == 10 &&
+             data.numericValue is number &&
+             data.secondaryValue is number &&
+             data.label is string &&
+             data.label.size() <= 40 &&
+             data.notes is string &&
+             data.notes.size() <= 400 &&
+             data.recordedAtMillis is int &&
+             data.recordedAtMillis >= 0 &&
+             data.clientUpdatedAtMillis is int &&
+             data.clientUpdatedAtMillis >= 0 &&
+             data.createdAt is timestamp &&
+             data.createdAt <= request.time &&
+             data.updatedAt is timestamp &&
+             data.updatedAt <= request.time;
+    }
+
+    match /users/{userId}/profile/{docId} {
+      allow get: if isOwner(userId) && isValidId(docId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+                       isValidId(docId) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll([
+                         'userId', 'displayName', 'dailyStepGoal', 'dailyWaterGoalMl',
+                         'useImperialUnits', 'languageCode', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'displayName', 'dailyStepGoal', 'dailyWaterGoalMl',
+                         'useImperialUnits', 'languageCode', 'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidProfile(incoming());
+      allow update: if isOwner(userId) &&
+                       isValidId(docId) &&
+                       isValidProfile(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'displayName', 'dailyStepGoal', 'dailyWaterGoalMl',
+                         'useImperialUnits', 'languageCode', 'updatedAt'
+                       ]);
+      allow delete: if isOwner(userId) && isValidId(docId);
+    }
+
+    match /users/{userId}/daily_steps/{dateIso} {
+      allow get: if isOwner(userId) && isValidId(dateIso);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+                       isValidId(dateIso) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll([
+                         'userId', 'dateIso', 'steps', 'goal', 'distanceMeters',
+                         'caloriesKcal', 'activeMinutes', 'source', 'clientUpdatedAtMillis',
+                         'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'dateIso', 'steps', 'goal', 'distanceMeters',
+                         'caloriesKcal', 'activeMinutes', 'source', 'clientUpdatedAtMillis',
+                         'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidDailyStep(incoming());
+      allow update: if isOwner(userId) &&
+                       isValidId(dateIso) &&
+                       isValidDailyStep(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'steps', 'goal', 'distanceMeters', 'caloriesKcal',
+                         'activeMinutes', 'source', 'clientUpdatedAtMillis', 'updatedAt'
+                       ]);
+      allow delete: if isOwner(userId) && isValidId(dateIso);
+    }
+
+    match /users/{userId}/gps_sessions/{sessionId} {
+      allow get: if isOwner(userId) && isValidId(sessionId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+                       isValidId(sessionId) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll([
+                         'userId', 'activityType', 'title', 'dateIso', 'startTimeMillis',
+                         'endTimeMillis', 'activeDurationMillis', 'distanceMeters',
+                         'avgSpeedMps', 'caloriesKcal', 'steps', 'notes',
+                         'clientUpdatedAtMillis', 'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'activityType', 'title', 'dateIso', 'startTimeMillis',
+                         'endTimeMillis', 'activeDurationMillis', 'distanceMeters',
+                         'avgSpeedMps', 'caloriesKcal', 'steps', 'notes',
+                         'clientUpdatedAtMillis', 'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidGpsSession(incoming());
+      allow update: if isOwner(userId) &&
+                       isValidId(sessionId) &&
+                       isValidGpsSession(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'activityType', 'title', 'dateIso', 'startTimeMillis',
+                         'endTimeMillis', 'activeDurationMillis', 'distanceMeters',
+                         'avgSpeedMps', 'caloriesKcal', 'steps', 'notes',
+                         'clientUpdatedAtMillis', 'updatedAt'
+                       ]);
+      allow delete: if isOwner(userId) && isValidId(sessionId);
+    }
+
+    match /users/{userId}/health_logs/{logId} {
+      allow get: if isOwner(userId) && isValidId(logId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+                       isValidId(logId) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().keys().hasAll([
+                         'userId', 'logType', 'dateIso', 'numericValue', 'secondaryValue',
+                         'label', 'notes', 'recordedAtMillis', 'clientUpdatedAtMillis',
+                         'createdAt', 'updatedAt'
+                       ]) &&
+                       incoming().keys().hasOnly([
+                         'userId', 'logType', 'dateIso', 'numericValue', 'secondaryValue',
+                         'label', 'notes', 'recordedAtMillis', 'clientUpdatedAtMillis',
+                         'createdAt', 'updatedAt'
+                       ]) &&
+                       isValidHealthLog(incoming());
+      allow update: if isOwner(userId) &&
+                       isValidId(logId) &&
+                       isValidHealthLog(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly([
+                         'numericValue', 'secondaryValue', 'label', 'notes',
+                         'recordedAtMillis', 'clientUpdatedAtMillis', 'updatedAt'
+                       ]);
+      allow delete: if isOwner(userId) && isValidId(logId);
+    }
+  }
+}

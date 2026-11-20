@@ -1,0 +1,6 @@
+{
+  "name": "VITALTRACK",
+  "description": "Intelligent personal wellness, activity, GPS route, health, habit, and AI coaching tracker.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
